@@ -16,29 +16,16 @@ var currentHour = moment().hour(); // get time 24hr
 var time = 0; //use in changeTo12hr
 var displayTime = 0; // use in createTimeBlocks
 
-
-
-
-
-
-
 // event variables
 eventArr = [];
 
-
-
-
 // * functions
-// on load 
+// when the page loads
 
 function onLoad() {
     displayDate();
     createTimeBlocks();
    
-    
-   
-    
-
     // getEvents();
 }
 
@@ -72,8 +59,8 @@ function changeTimeClass() {  // * working
     $.each($(".time-block"), function(index, value) {
         var hr = $(value).attr("data-time");
         if ( hr < currentHour) {
-            $(this).find("textarea").addClass("past").attr("disabled", "disabled");;
-            $(this).find(".saveBtn").addClass('disabled').attr("disabled", "disabled");
+            $(this).find("textarea").addClass("past").attr("disabled", "disabled");
+            $(this).find(".saveBtn").addClass('disabled').attr("disabled", true);
         } else if (hr > currentHour) {
             $(this).find("textarea").addClass("future");
         } else {
@@ -82,8 +69,6 @@ function changeTimeClass() {  // * working
     })
     
 }
-
-
 // creates time blocks
 function createTimeBlocks() { // * working
    
@@ -91,40 +76,34 @@ function createTimeBlocks() { // * working
         
         displayTime = changeTo12hr(i);
         
-        timeBlockDiv.append(`<div class='row time-block' data-time = ${i} > 
+        timeBlockDiv.append(
             
-            <div class='hour col-md-2'> ${displayTime}  </div> 
+            `<div class='row time-block' data-time = ${i} > 
             
-            <textarea class = 'col-md-9' value = ${i}> </textarea> 
+                <div class='hour col-md-2'> ${displayTime}  </div> 
+            
+                <textarea class = 'col-md-9 description'> </textarea> 
         
-            <div class= 'saveBtn col-md-1'> <i class= 'far fa-save fa-lg'> </i> </div> 
+                <div class= 'saveBtn col-md-1'> 
+                    <i class= 'far fa-save fa-lg'> </i>
+                    </div> 
             
             </div>`);
 
         changeTimeClass();
-        
     }
-
 }
 
 // ---- EVENT FUNCTIONS -----
 
 
-function saveEvent() {
-    
-
-    newEvent = {
-        eventTime: $(value).attr("data-time"),
-        eventDetails: $(this).find("textarea").text()
-    }
-
-    eventArr.push(newEvent);
-    localStorage.setItem("planEvent", JSON.stringify(eventArr));
-
+function getEvents() {
+   localStorage.getItem("eventDetails");
+   localStorage.getItem("eventTime");
 }
 
-function getEvents() {
-    eventArr = JSON.parse(localStorage.getItem("planEvent") || []);
+function displayEvents() {
+    
 }
 
 
@@ -135,7 +114,11 @@ onLoad();
 // * click events
 
 // save event
-$(".saveBtn").click(function () {
-
-    saveEvent();
+$(".saveBtn").on("click", function () {
+    
+    var description = $(this).siblings("textarea").val();
+    var eventTime = $(this).siblings(".hour").text();
+    localStorage.setItem("eventDetails", description);
+    localStorage.setItem("eventTime", eventTime);
+    
 });
