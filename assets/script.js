@@ -19,6 +19,9 @@ var displayTime = 0; // use in createTimeBlocks
 
 
 
+
+
+
 // event variables
 eventArr = [];
 
@@ -31,6 +34,10 @@ eventArr = [];
 function onLoad() {
     displayDate();
     createTimeBlocks();
+   
+    
+   
+    
 
     // getEvents();
 }
@@ -60,50 +67,55 @@ function changeTo12hr(hr) { // * working
 }
 
 // determines past, present, future
-// function changeTimeClass(hr) { //
+function changeTimeClass() {  // * working
+   
+    $.each($(".time-block"), function(index, value) {
+        var hr = $(value).attr("data-time");
+        if ( hr < currentHour) {
+            $(this).find("textarea").addClass("past").attr("disabled", "disabled");;
+            $(this).find(".saveBtn").addClass('disabled').attr("disabled", "disabled");
+        } else if (hr > currentHour) {
+            $(this).find("textarea").addClass("future");
+        } else {
+            $(this).find("textarea").addClass("present");
+        }
+    })
     
-//     $("textarea").each(function(hr) { 
-//         if (hr < currentHour) {
-//             $("textarea").addClass("past");
-//         } else if (hr > currentHour) {
-//             $("textarea").addClass("future");
-//         } else {
-//             $("textarea").addClass("present")
-//         }
-//     });
-// }
+}
 
 
 // creates time blocks
 function createTimeBlocks() { // * working
-
+   
     for (var i = 9; i <= 17; i++) {
         
         displayTime = changeTo12hr(i);
+        
+        timeBlockDiv.append(`<div class='row time-block' data-time = ${i} > 
+            
+            <div class='hour col-md-2'> ${displayTime}  </div> 
+            
+            <textarea class = 'col-md-9' value = ${i}> </textarea> 
+        
+            <div class= 'saveBtn col-md-1'> <i class= 'far fa-save fa-lg'> </i> </div> 
+            
+            </div>`);
 
-        timeBlockDiv.append("<div class='row time-block'> <div class='hour col-md-2'>" + displayTime + "</div>" + "<textarea class = 'col-md-9' data-index = '" + i + "'> </textarea>" + "<div class= 'saveBtn col-md-1'> <i class= 'far fa-save fa-lg'> </i> </div> </div>");
-
-        $("textarea").each(function(i) { 
-            if (i < currentHour) {
-                $("textarea").addClass("past");
-            } else if (i > currentHour) {
-                $("textarea").addClass("future");
-            } else {
-                $("textarea").addClass("present")
-            }
-        });
+        changeTimeClass();
+        
     }
+
 }
 
 // ---- EVENT FUNCTIONS -----
 
-//! ahhh
+
 function saveEvent() {
     
 
     newEvent = {
-        eventTime: $(".hour").val(),
-        eventDetails: $("textarea").text()
+        eventTime: $(value).attr("data-time"),
+        eventDetails: $(this).find("textarea").text()
     }
 
     eventArr.push(newEvent);
