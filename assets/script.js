@@ -17,7 +17,9 @@ var time = 0; //use in changeTo12hr
 var displayTime = 0; // use in createTimeBlocks
 
 // event variables
-eventArr = [];
+var description = "";
+var eventTime = "";
+var eventArr = [];
 
 // * functions
 // when the page loads
@@ -96,6 +98,17 @@ function createTimeBlocks() { // * working
 
 // ---- EVENT FUNCTIONS -----
 
+function saveItems() {
+    
+
+    var newItem = {
+        eventTime: eventTime,
+        eventDetails: description
+    }
+
+    eventArr.push(newItem);
+    console.log(eventArr);
+}
 
 function getEvents() {
    localStorage.getItem("eventDetails");
@@ -103,7 +116,7 @@ function getEvents() {
 }
 
 function displayEvents() {
-    
+
 }
 
 
@@ -115,10 +128,12 @@ onLoad();
 
 // save event
 $(".saveBtn").on("click", function () {
-    
-    var description = $(this).siblings("textarea").val();
-    var eventTime = $(this).siblings(".hour").text();
+    description = $(this).siblings("textarea").val();
+    eventTime = $(this).siblings(".hour").text();
+
     localStorage.setItem("eventDetails", description);
     localStorage.setItem("eventTime", eventTime);
+    saveItems();
+    
     
 });
