@@ -12,9 +12,12 @@ var date = moment().format("LLLL"); // displays current day and time
 var timeBlockDiv = $("#timeBlock"); // where time divs will go
 
 // time variables
-var currentHour = moment().hour("H"); // get time 24hr
-var time = 0;
-var displayTime=0;
+var currentHour = moment().hour(); // get time 24hr
+var time = 0; //use in changeTo12hr
+var displayTime = 0; // use in createTimeBlocks
+
+
+
 
 // event variables
 eventArr = [];
@@ -28,6 +31,7 @@ eventArr = [];
 function onLoad() {
     displayDate();
     createTimeBlocks();
+
     // getEvents();
 }
 
@@ -41,10 +45,12 @@ function displayDate() { // * working
 // changes 24 hr format to 12 hr format
 function changeTo12hr(hr) { // * working
     var ampm = "";
-    
 
     if (hr > 12) {
         time = hr - 12;
+        ampm = "PM";
+    } else if (hr === 12) {
+        time = hr;
         ampm = "PM";
     } else {
         time = hr
@@ -54,53 +60,59 @@ function changeTo12hr(hr) { // * working
 }
 
 // determines past, present, future
-function determineTimeTense(hr) { // * working
+// function changeTimeClass(hr) { //
+    
+//     $("textarea").each(function(hr) { 
+//         if (hr < currentHour) {
+//             $("textarea").addClass("past");
+//         } else if (hr > currentHour) {
+//             $("textarea").addClass("future");
+//         } else {
+//             $("textarea").addClass("present")
+//         }
+//     });
+// }
 
-    if (hr < currentHour) {
-        $("textarea").addClass("past");
-    }
-    else if (hr > currentHour) {
-        $("textarea").addClass("future");
-    } 
-    else  {
-        $("textarea").addClass("present")
-    }
-}
 
 // creates time blocks
 function createTimeBlocks() { // * working
 
-    for (var i=9; i <=17; i++) {
+    for (var i = 9; i <= 17; i++) {
         
         displayTime = changeTo12hr(i);
 
-        timeBlockDiv.append("<div class='row time-block'><div data-index='"+ i + "' class='hour col-md-2'>" + displayTime +"</div>" + "<textarea id = 'event' class = 'col-md-8'></textarea>" + "<div class= 'saveBtn col-md-2'> <i class= 'far fa-save'> </i> </div> </div>");
+        timeBlockDiv.append("<div class='row time-block'> <div class='hour col-md-2'>" + displayTime + "</div>" + "<textarea class = 'col-md-9' data-index = '" + i + "'> </textarea>" + "<div class= 'saveBtn col-md-1'> <i class= 'far fa-save fa-lg'> </i> </div> </div>");
 
-        determineTimeTense(i);
-
-    }  
-
+        $("textarea").each(function(i) { 
+            if (i < currentHour) {
+                $("textarea").addClass("past");
+            } else if (i > currentHour) {
+                $("textarea").addClass("future");
+            } else {
+                $("textarea").addClass("present")
+            }
+        });
+    }
 }
 
 // ---- EVENT FUNCTIONS -----
 
 //! ahhh
 function saveEvent() {
-    var text = $("textarea#event").val();
-   console.log(text)
+    
 
     newEvent = {
-       eventTime: $(".hour").text(),
-       eventDetails: text
-   }
+        eventTime: $(".hour").val(),
+        eventDetails: $("textarea").text()
+    }
 
-   eventArr.push(newEvent);
-   localStorage.setItem("event", JSON.stringify(eventArr));
+    eventArr.push(newEvent);
+    localStorage.setItem("planEvent", JSON.stringify(eventArr));
 
 }
 
 function getEvents() {
-    eventArr = JSON.parse(localStorage.getItem("event") || []);
+    eventArr = JSON.parse(localStorage.getItem("planEvent") || []);
 }
 
 
@@ -111,8 +123,7 @@ onLoad();
 // * click events
 
 // save event
-$(".saveBtn").click(function() {
-    
+$(".saveBtn").click(function () {
+
     saveEvent();
 });
-
