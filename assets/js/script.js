@@ -17,7 +17,7 @@ var time = 0; //use in changeTo12hr
 var displayTime = 0; // use in createTimeBlocks
 
 // event variables
-var description = "";
+var eventDetails = "";
 var eventTime = "";
 var eventArr = [];
 
@@ -25,10 +25,12 @@ var eventArr = [];
 // when the page loads
 
 function onLoad() {
+
     displayDate();
     createTimeBlocks();
-   
-    // getEvents();
+    getEvents();
+    displayEvents();
+
 }
 
 // ---- TIME/DATE FUNCTIONS -----
@@ -56,11 +58,11 @@ function changeTo12hr(hr) { // * working
 }
 
 // determines past, present, future
-function changeTimeClass() {  // * working
-   
-    $.each($(".time-block"), function(index, value) {
+function changeTimeClass() { // * working
+
+    $.each($(".time-block"), function (index, value) {
         var hr = $(value).attr("data-time");
-        if ( hr < currentHour) {
+        if (hr < currentHour) {
             $(this).find("textarea").addClass("past").attr("disabled", "disabled");
             $(this).find(".saveBtn").addClass('disabled').attr("disabled", true);
         } else if (hr > currentHour) {
@@ -69,24 +71,24 @@ function changeTimeClass() {  // * working
             $(this).find("textarea").addClass("present");
         }
     })
-    
+
 }
 // creates time blocks
 function createTimeBlocks() { // * working
-   
+
     for (var i = 9; i <= 17; i++) {
-        
+
         displayTime = changeTo12hr(i);
-        
+
         timeBlockDiv.append(
-            
+
             `<div class='row time-block' data-time = ${i} > 
             
                 <div class='hour col-md-2'> ${displayTime}  </div> 
             
-                <textarea class = 'col-md-9 description'> </textarea> 
+                <textarea class = 'col-md-9 eventDetails'> </textarea> 
         
-                <div class= 'saveBtn col-md-1'> 
+                <div class= 'saveBtn col-md-1 '> 
                     <i class= 'far fa-save fa-lg'> </i>
                     </div> 
             
@@ -98,25 +100,28 @@ function createTimeBlocks() { // * working
 
 // ---- EVENT FUNCTIONS -----
 
-function saveItems() {
-    
-
-    var newItem = {
+function saveEvents() {
+    newEvent = {
         eventTime: eventTime,
-        eventDetails: description
+        eventDetails: eventDetails
     }
 
-    eventArr.push(newItem);
-    console.log(eventArr);
+    eventArr.push(newEvent);
+   
 }
 
 function getEvents() {
-   localStorage.getItem("eventDetails");
-   localStorage.getItem("eventTime");
+    localStorage.getItem("eventDetails");
+    localStorage.getItem("eventTime");
+
 }
+
 
 function displayEvents() {
 
+    for (var i = 0; i < eventArr.length; i++) {
+        
+    }
 }
 
 
@@ -126,14 +131,15 @@ onLoad();
 
 // * click events
 
-// save event
+
 $(".saveBtn").on("click", function () {
-    description = $(this).siblings("textarea").val();
+    
+    eventDetails = $(this).siblings("textarea").val();
     eventTime = $(this).siblings(".hour").text();
 
-    localStorage.setItem("eventDetails", description);
+    localStorage.setItem("eventDetails", eventDetails);
     localStorage.setItem("eventTime", eventTime);
-    saveItems();
-    
-    
+
+    saveEvents();
+    console.log(eventArr)
 });
