@@ -1,9 +1,3 @@
-// create time blocks
-// display current day
-// time blocks class to indicate past, present future
-// click save icon saves notes to local storage
-// get items previously saved items from local storage to display in time blocks
-
 // * variables
 //header
 var date = moment().format("LLLL"); // displays current day and time
@@ -29,8 +23,6 @@ function onLoad() {
     displayDate();
     createTimeBlocks();
     displayEvents();
-
-
 }
 
 // ---- TIME/DATE FUNCTIONS -----
@@ -39,12 +31,12 @@ function setTimer() {
     setInterval(onLoad, 900000);
 }
 //displays date in header
-function displayDate() { 
+function displayDate() {
     $("#currentDay").text(date);
 }
 
 // changes 24 hr format to 12 hr format
-function changeTo12hr(hr) { 
+function changeTo12hr(hr) {
     var ampm = "";
 
     if (hr > 12) {
@@ -61,13 +53,13 @@ function changeTo12hr(hr) {
 }
 
 // determines past, present, future
-function changeTimeClass() { 
+function changeTimeClass() {
 
     $.each($(".time-block"), function (txArea, value) {
         var hr = $(value).attr("data-time");
         var txArea = $(this).find("textarea")
         if (hr < currentHour) {
-            txArea.addClass("past") 
+            txArea.addClass("past")
         } else if (hr > currentHour) {
             txArea.addClass("future");
         } else {
@@ -77,7 +69,7 @@ function changeTimeClass() {
 
 }
 // creates time blocks
-function createTimeBlocks() { 
+function createTimeBlocks() {
 
     for (var i = 9; i <= 17; i++) {
 
@@ -120,12 +112,12 @@ function displayEvents() {
     for (var i = 0; i < eventArr.length; i++) {
         var timeIndex = eventArr[i].eventTime;
         var event = eventArr[i].eventDetails
-        // var targetDiv = $("textarea")[i];
+
+
 
         switch (timeIndex) {
             case "9:00 AM":
                 $(".row").find($("textarea")[0]).text(event);
-                // console.log($("textarea").text(event))
                 break;
 
             case "10:00 AM":
@@ -158,29 +150,25 @@ function displayEvents() {
 
             case "5:00 PM":
                 $(".row").find($("textarea")[8]).text(event);
-                break;                
+                break;
         }
 
     }
 }
-
-function clearEvents() {
-    if (time = moment().endOf("day"));
-    localStorage.clear();
-}
-
 
 // * call functions
 onLoad();
 
 
 // * click events
-$(".saveBtn").on("click", function (event) {
-    event.preventDefault();
+$(document).ready(function () {
+    $(".saveBtn").on("click", function (event) {
+        event.preventDefault();
 
-    eventDetails = $(this).siblings("textarea").val().trim();
-    eventTime = $(this).siblings(".hour").text().trim();
+        eventDetails = $(this).siblings("textarea").val().trim();
+        eventTime = $(this).siblings(".hour").text().trim();
 
-    saveEvents();
-    console.log(eventArr)
+        saveEvents();
+
+    });
 });
