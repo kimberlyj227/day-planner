@@ -25,23 +25,26 @@ var eventArr = [];
 // when the page loads
 
 function onLoad() {
-
+    getEvents();
     displayDate();
     createTimeBlocks();
-    getEvents();
     displayEvents();
+
 
 }
 
 // ---- TIME/DATE FUNCTIONS -----
-
+//reloads the page every 15 minutes
+function setTimer() {
+    setInterval(onLoad, 900000);
+}
 //displays date in header
-function displayDate() { // * working
+function displayDate() { 
     $("#currentDay").text(date);
 }
 
 // changes 24 hr format to 12 hr format
-function changeTo12hr(hr) { // * working
+function changeTo12hr(hr) { 
     var ampm = "";
 
     if (hr > 12) {
@@ -58,23 +61,23 @@ function changeTo12hr(hr) { // * working
 }
 
 // determines past, present, future
-function changeTimeClass() { // * working
+function changeTimeClass() { 
 
-    $.each($(".time-block"), function (index, value) {
+    $.each($(".time-block"), function (txArea, value) {
         var hr = $(value).attr("data-time");
+        var txArea = $(this).find("textarea")
         if (hr < currentHour) {
-            $(this).find("textarea").addClass("past").attr("disabled", "disabled");
-            $(this).find(".saveBtn").addClass('disabled').attr("disabled", true);
+            txArea.addClass("past") 
         } else if (hr > currentHour) {
-            $(this).find("textarea").addClass("future");
+            txArea.addClass("future");
         } else {
-            $(this).find("textarea").addClass("present");
+            txArea.addClass("present");
         }
     })
 
 }
 // creates time blocks
-function createTimeBlocks() { // * working
+function createTimeBlocks() { 
 
     for (var i = 9; i <= 17; i++) {
 
@@ -82,11 +85,11 @@ function createTimeBlocks() { // * working
 
         timeBlockDiv.append(
 
-            `<div class='row time-block' data-time = ${i} > 
+            `<div class='row time-block' data-time ='${i}'> 
             
-                <div class='hour col-md-2'> ${displayTime}  </div> 
+                <div class='hour col-md-2'>${displayTime}</div> 
             
-                <textarea class = 'col-md-9 eventDetails'> </textarea> 
+                <textarea class = 'col-md-9 eventDetails'></textarea> 
         
                 <div class= 'saveBtn col-md-1 '> 
                     <i class= 'far fa-save fa-lg'> </i>
@@ -98,30 +101,72 @@ function createTimeBlocks() { // * working
     }
 }
 
-// ---- EVENT FUNCTIONS -----
+// ---- LOCAL STORAGE FUNCTIONS -----
 
 function saveEvents() {
     newEvent = {
         eventTime: eventTime,
         eventDetails: eventDetails
     }
-
     eventArr.push(newEvent);
-   
+    localStorage.setItem("plannerDetails", JSON.stringify(eventArr))
 }
 
 function getEvents() {
-    localStorage.getItem("eventDetails");
-    localStorage.getItem("eventTime");
-
+    eventArr = JSON.parse(localStorage.getItem("plannerDetails")) || [];
 }
 
-
 function displayEvents() {
-
     for (var i = 0; i < eventArr.length; i++) {
-        
+        var timeIndex = eventArr[i].eventTime;
+        var event = eventArr[i].eventDetails
+        // var targetDiv = $("textarea")[i];
+
+        switch (timeIndex) {
+            case "9:00 AM":
+                $(".row").find($("textarea")[0]).text(event);
+                // console.log($("textarea").text(event))
+                break;
+
+            case "10:00 AM":
+                $(".row").find($("textarea")[1]).text(event);
+                break;
+
+            case "11:00 AM":
+                $(".row").find($("textarea")[2]).text(event);
+                break;
+
+            case "12:00 PM":
+                $(".row").find($("textarea")[3]).text(event);
+                break;
+
+            case "1:00 PM":
+                $(".row").find($("textarea")[4]).text(event);
+                break;
+
+            case "2:00 PM":
+                $(".row").find($("textarea")[5]).text(event);
+                break;
+
+            case "3:00 PM":
+                $(".row").find($("textarea")[6]).text(event);
+                break;
+
+            case "4:00 PM":
+                $(".row").find($("textarea")[7]).text(event);
+                break;
+
+            case "5:00 PM":
+                $(".row").find($("textarea")[8]).text(event);
+                break;                
+        }
+
     }
+}
+
+function clearEvents() {
+    if (time = moment().endOf("day"));
+    localStorage.clear();
 }
 
 
@@ -130,15 +175,11 @@ onLoad();
 
 
 // * click events
+$(".saveBtn").on("click", function (event) {
+    event.preventDefault();
 
-
-$(".saveBtn").on("click", function () {
-    
-    eventDetails = $(this).siblings("textarea").val();
-    eventTime = $(this).siblings(".hour").text();
-
-    localStorage.setItem("eventDetails", eventDetails);
-    localStorage.setItem("eventTime", eventTime);
+    eventDetails = $(this).siblings("textarea").val().trim();
+    eventTime = $(this).siblings(".hour").text().trim();
 
     saveEvents();
     console.log(eventArr)
