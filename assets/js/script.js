@@ -1,5 +1,5 @@
-// ?create time blocks
-// ?display current day
+// create time blocks
+// display current day
 // time blocks class to indicate past, present future
 // click save icon saves notes to local storage
 // get items previously saved items from local storage to display in time blocks
